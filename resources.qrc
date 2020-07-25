@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/">
+        <file>licenses/Qt.txt</file>
+        <file>licenses/MinGW.txt</file>
+        <file>licenses/Curl.txt</file>
+        <file>licenses/OpenSSL.txt</file>
+    </qresource>
+</RCC>
