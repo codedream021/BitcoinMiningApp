@@ -1,7 +1,7 @@
 #ifndef INFODIALOG_H
 #define INFODIALOG_H
-
-#include <QDialog>
+ 
+#include <QtWidgets/QDialog>
 
 class QPushButton;
 

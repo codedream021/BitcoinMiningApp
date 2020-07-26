@@ -1,0 +1,57 @@
+﻿{
+  "configurations": [
+    {
+      "name": "x64-Debug",
+      "generator": "Ninja",
+      "configurationType": "Debug",
+      "inheritEnvironments": [ "msvc_x64_x64" ],
+      "buildRoot": "${projectDir}\\out\\build\\${name}",
+      "installRoot": "${projectDir}\\out\\install\\${name}",
+      "cmakeCommandArgs": "",
+      "buildCommandArgs": "",
+      "ctestCommandArgs": "",
+      "variables": [
+        {
+          "name": "CUDA_ENABLE",
+          "value": "False",
+          "type": "BOOL"
+        },
+        {
+          "name": "OpenCL_ENABLE",
+          "value": "False",
+          "type": "BOOL"
+        },
+        {
+          "name": "MICROHTTPD_ENABLE",
+          "value": "False",
+          "type": "BOOL"
+        },
+        {
+          "name": "OpenSSL_ENABLE",
+          "value": "False",
+          "type": "BOOL"
+        },
+        {
+          "name": "HWLOC_ENABLE",
+          "value": "False",
+          "type": "BOOL"
+        },
+        {
+          "name": "QT_QMAKE_EXECUTABLE",
+          "value": "C:/Qt/5.15.0/msvc2019_64/bin/qmake.exe",
+          "type": "FILEPATH"
+        },
+        {
+          "name": "QT_MKSPECS_DIR",
+          "value": "C:/Qt/5.15.0/msvc2019_64/mkspecs",
+          "type": "PATH"
+        },
+        {
+          "name": "Qt5_DIR",
+          "value": "C:/Qt/5.15.0/msvc2019_64",
+          "type": "PATH"
+        }
+      ]
+    }
+  ]
+}
