@@ -15,10 +15,11 @@ InfoDialog::InfoDialog(QWidget *parent) : QDialog(parent)
     setLayout(new QVBoxLayout());
 
     layout()->addWidget(new QLabel("Licenses"));
-    connect(addLicenseLink("MinGW"), SIGNAL(clicked(bool)), this, SLOT(onShowMinGWLicense()));
+ //   connect(addLicenseLink("MinGW"), SIGNAL(clicked(bool)), this, SLOT(onShowMinGWLicense()));
     connect(addLicenseLink("Qt framework"), SIGNAL(clicked(bool)), this, SLOT(onShowQtLicense()));
-    connect(addLicenseLink("Curl"), SIGNAL(clicked(bool)), this, SLOT(onShowCurlLicense()));
-    connect(addLicenseLink("OpenSSL"), SIGNAL(clicked(bool)), this, SLOT(onShowOpenSSLLicense()));
+    connect(addLicenseLink("XMR Stak"), SIGNAL(clicked(bool)), this, SLOT(onShowQtLicense()));
+    //   connect(addLicenseLink("Curl"), SIGNAL(clicked(bool)), this, SLOT(onShowCurlLicense()));
+ //   connect(addLicenseLink("OpenSSL"), SIGNAL(clicked(bool)), this, SLOT(onShowOpenSSLLicense()));
 
     QDialogButtonBox* buttonBox;
     layout()->addWidget(buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok));
@@ -48,7 +49,7 @@ LicenseDialog::LicenseDialog(const QString& library, QWidget *parent) : QDialog(
     setLayout(new QVBoxLayout());
 
     QPlainTextEdit* licenseTextEdit;
-    QFile file(":/licenses/" + library + ".txt");
+    QFile file(library + ".txt");
     QString license;
     if (file.open(QIODevice::ReadOnly | QIODevice::Text)) license = (QTextStream(&file).readAll());
     layout()->addWidget(licenseTextEdit = new QPlainTextEdit(license));

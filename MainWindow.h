@@ -4,9 +4,7 @@
 #include <QMainWindow>
 
 class QWidget;
-class QPushButton;
 class QLabel;
-class QLineEdit;
 class QTimer;
 
 class MainWindow : public QMainWindow
@@ -15,19 +13,13 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
-private slots:
-    void onStartMiningButtonClicked();
-    void onStopMiningButtonClicked();
+private slots: 
     void onInfoButtonClicked();
     void onUpdateStats();
 private:
     QTimer* updateTimer;
     QWidget* mainWidget;
-    QPushButton *startMiningButton, *stopMiningButton, *infoButton;
     QLabel  *statsLabel;
-    QLineEdit *userLineEdit, *passLineEdit, *urlLineEdit;
-    void updateStats();
-    QLineEdit* addLabeledEdit(const QString& labelText, const QString& initialContents);
 };
 
 #endif // MAINWINDOW_H

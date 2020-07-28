@@ -26,8 +26,7 @@ set ( MOC_HEADERS
  InfoDialog.h
 )
 
-set ( RESOURCES
- resources.qrc
+set ( RESOURCES 
 )
 
 # Next lines needed for building all Qt projects
@@ -56,25 +55,26 @@ target_link_libraries(${PROJECT_NAME} Qt5::Gui Qt5::Core Qt5::Widgets)
 
 # build it (link libraries)
 target_link_libraries( ${PROJECT_NAME} ${QT_LIBRARIES} )
+target_link_libraries( ${PROJECT_NAME} xmr-stak-rx )
 
 # generate proper GUI program on specified platform
-#if(WIN32) # Check if we are on Windows
-#	if(MSVC) # Check if we are using the Visual Studio compiler
-#		set_target_properties(${PROJECT_NAME} PROPERTIES
-#			WIN32_EXECUTABLE YES
-#			LINK_FLAGS "/ENTRY:mainCRTStartup"
-#		)
-#	elseif(CMAKE_COMPILER_IS_GNUCXX)
-#			# SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mwindows") # Not tested
-#	else()
-#		message(SEND_ERROR "You are using an unsupported Windows compiler! (Not MSVC or GCC)")
-#	endif(MSVC)
-#elseif(APPLE)
-#	set_target_properties(${PROJECT_NAME} PROPERTIES
-#			MACOSX_BUNDLE YES
-#	)
+if(WIN32) # Check if we are on Windows
+	if(MSVC) # Check if we are using the Visual Studio compiler
+		set_target_properties(${PROJECT_NAME} PROPERTIES
+			WIN32_EXECUTABLE YES
+			LINK_FLAGS "/ENTRY:mainCRTStartup"
+		)
+	elseif(CMAKE_COMPILER_IS_GNUCXX)
+			 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mwindows") # Not tested
+	else()
+		message(SEND_ERROR "You are using an unsupported Windows compiler! (Not MSVC or GCC)")
+	endif(MSVC)
+elseif(APPLE)
+	set_target_properties(${PROJECT_NAME} PROPERTIES
+			MACOSX_BUNDLE YES
+	)
 #elseif(UNIX)
 	# Nothing special required
 #else()
 #	message(SEND_ERROR "You are on an unsupported platform! (Not Win32, Mac OS X or Unix)")
-#endif(WIN32)
+endif(WIN32)
