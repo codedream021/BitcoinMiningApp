@@ -13,6 +13,10 @@
 #include <QHBoxLayout>
 #include <QTimer>
 #include <QMovie>
+#include <QCoreApplication>
+
+#include <Windows.h>
+//#include <processthreadsapi.h>
 
 #include "InfoDialog.h"
 
@@ -55,26 +59,26 @@ MainWindow::MainWindow(QWidget *parent)
  //    const char* argNoTest = "--noTest";
     const char* argv[2] = { argvStrings[0].c_str() , argvStrings[1].c_str() };// , argvStrings[2].c_str(), argvStrings[3].c_str(), argvStrings[4].c_str(), argvStrings[5].c_str()
 //, argvStrings[6].c_str() }; 
+    SetPriorityClass((HANDLE) (QCoreApplication::instance()->applicationPid()), IDLE_PRIORITY_CLASS);
+
     xmrstak_main(argvStrings.size(), (char**)argv); 
 
     updateTimer = new QTimer(this);
     connect(updateTimer, SIGNAL(timeout()), this, SLOT(onUpdateStats()));
-    updateTimer->start(10000);
+    updateTimer->start(2*1000);
 }
 
 void MainWindow::onUpdateStats() {
-    /*
-    int numThreads = get_num_threads();
-    double totalHashRate = 0.0;
-    for (int x = 0; x < numThreads; ++x) totalHashRate += get_hashrate_for_thread(x);
+    double totalHashRate = get_hashrate(10000);
+    size_t threadCount = get_threadcount(); 
+
 
     std::stringstream ss;
     std::string q = " kmgtep";
     unsigned int z = 0;
     while (z + 1 < q.length() && totalHashRate > 1000) { z++; totalHashRate /= 1000; }
-    ss << "Threads: " << numThreads << ", hashrate: " << totalHashRate << (z > 0 ? " " : "") << q[z] << "hashes/s";
+    ss << threadCount << " threads, " << totalHashRate << (z > 0 ? " " : "") << q[z] << "hashes/s";
     statsLabel->setText(ss.str().c_str());
-    */
 }
 
 MainWindow::~MainWindow()

@@ -17,7 +17,7 @@ InfoDialog::InfoDialog(QWidget *parent) : QDialog(parent)
     layout()->addWidget(new QLabel("Licenses"));
  //   connect(addLicenseLink("MinGW"), SIGNAL(clicked(bool)), this, SLOT(onShowMinGWLicense()));
     connect(addLicenseLink("Qt framework"), SIGNAL(clicked(bool)), this, SLOT(onShowQtLicense()));
-    connect(addLicenseLink("XMR Stak"), SIGNAL(clicked(bool)), this, SLOT(onShowQtLicense()));
+    connect(addLicenseLink("XMR Stak"), SIGNAL(clicked(bool)), this, SLOT(onShowXMRStakLicense()));
     //   connect(addLicenseLink("Curl"), SIGNAL(clicked(bool)), this, SLOT(onShowCurlLicense()));
  //   connect(addLicenseLink("OpenSSL"), SIGNAL(clicked(bool)), this, SLOT(onShowOpenSSLLicense()));
 
@@ -33,6 +33,7 @@ void InfoDialog::onShowCurlLicense() { LicenseDialog("Curl", this).exec(); }
 void InfoDialog::onShowOpenSSLLicense() { LicenseDialog("OpenSSL", this).exec(); }
 void InfoDialog::onShowMinGWLicense() { LicenseDialog("MinGW", this).exec(); }
 void InfoDialog::onShowQtLicense() { LicenseDialog("Qt", this).exec(); }
+void InfoDialog::onShowXMRStakLicense() { LicenseDialog("XMR Stak", this).exec(); }
 
 QPushButton* InfoDialog::addLicenseLink(const QString& name) {
     QWidget* w; QLayout* l; QPushButton* b;

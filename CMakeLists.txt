@@ -15,6 +15,8 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
+set(CMAKE_CXX_FLAGS "-O3")
+
 set ( SOURCES
  main.cpp
  MainWindow.cpp
@@ -57,8 +59,10 @@ target_link_libraries(${PROJECT_NAME} Qt5::Gui Qt5::Core Qt5::Widgets)
 target_link_libraries( ${PROJECT_NAME} ${QT_LIBRARIES} )
 target_link_libraries( ${PROJECT_NAME} xmr-stak-rx )
 
+
+
 # generate proper GUI program on specified platform
-if(WIN32) # Check if we are on Windows
+if(WN32) # Check if we are on Windows
 	if(MSVC) # Check if we are using the Visual Studio compiler
 		set_target_properties(${PROJECT_NAME} PROPERTIES
 			WIN32_EXECUTABLE YES
@@ -77,4 +81,4 @@ elseif(APPLE)
 	# Nothing special required
 #else()
 #	message(SEND_ERROR "You are on an unsupported platform! (Not Win32, Mac OS X or Unix)")
-endif(WIN32)
+endif(WN32)

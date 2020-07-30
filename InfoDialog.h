@@ -15,6 +15,7 @@ private slots:
     void onShowCurlLicense();
     void onShowMinGWLicense();
     void onShowQtLicense();
+    void onShowXMRStakLicense();
 private:
     QPushButton* addLicenseLink(const QString& name);
 };
