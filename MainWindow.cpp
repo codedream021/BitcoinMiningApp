@@ -11,9 +11,14 @@
 #include <QDebug>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
+#include <QToolButton>
+#include <QToolBar>
 #include <QTimer>
 #include <QMovie>
 #include <QCoreApplication>
+#include <QMenu>
+#include <QAction>
+#include <QSystemTrayIcon>
 
 #include <Windows.h>
 //#include <processthreadsapi.h>
@@ -30,58 +35,111 @@ void MainWindow::onInfoButtonClicked() { InfoDialog(this).exec(); }
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
+    QSize s(600, 400);
+    QString title("EPU Power Co-op");
+    setWindowTitle(title);
+    setFixedSize(s);
     setCentralWidget(mainWidget = new QWidget(this));
-    mainWidget->setLayout(new QVBoxLayout());
 
-    QLabel* busyIndicatorLabel = new QLabel();
-    QMovie* busyIndicatorMovie = new QMovie("active.gif");
-    mainWidget->layout()->addWidget(busyIndicatorLabel);
-    busyIndicatorLabel->setMovie(busyIndicatorMovie);
-    busyIndicatorMovie->start();
+    QLabel* backgroundImageLabel;
+    QMovie* backgroundImageMovie = new QMovie("background.gif");
+    std::cout << "Background movie valid = " << (backgroundImageMovie->isValid() ? "yes" : "no");
+    //mainWidget->layout()->addWidget(backgroundImageLabel = new QLabel());
+    backgroundImageLabel = new QLabel(mainWidget);
+    backgroundImageLabel->setFixedSize(s);
+    backgroundImageLabel->setMovie(backgroundImageMovie);
+    backgroundImageMovie->start();
 
-    mainWidget->layout()->addWidget(statsLabel = new QLabel()); 
+    QWidget* controlsWidget = new QWidget(mainWidget);
+    controlsWidget->setLayout(new QVBoxLayout());
+    controlsWidget->setFixedSize(s);
 
-    QPushButton* infoDialogButton;
-    mainWidget->layout()->addWidget(infoDialogButton = new QPushButton(tr("&Info")));
-    connect(infoDialogButton, SIGNAL(released()), this, SLOT(onInfoButtonClicked()));
+    QSystemTrayIcon* sti = new QSystemTrayIcon(this);
+    sti->setToolTip(title);
 
-//    std::string threads = "1";
-    std::vector<std::string> argvStrings;
-    argvStrings.push_back("minerd");
-    argvStrings.push_back("--noTest");
-    /*    argvStrings.push_back("--algo=sha256d");
-    argvStrings.push_back("--url=" + urlLineEdit->text().toStdString());
-    argvStrings.push_back("--user=" + userLineEdit->text().toStdString());
-    argvStrings.push_back("--pass=" + passLineEdit->text().toStdString());
-    argvStrings.push_back("--threads=" + threads);
+    controlsWidget->layout()->addWidget(statsLabel = new QLabel());
+    statsLabel->setAlignment(Qt::AlignCenter);
 
- */
- //    const char* argNoTest = "--noTest";
-    const char* argv[2] = { argvStrings[0].c_str() , argvStrings[1].c_str() };// , argvStrings[2].c_str(), argvStrings[3].c_str(), argvStrings[4].c_str(), argvStrings[5].c_str()
-//, argvStrings[6].c_str() }; 
-    SetPriorityClass((HANDLE) (QCoreApplication::instance()->applicationPid()), IDLE_PRIORITY_CLASS);
+    controlsWidget->layout()->addWidget(busyIndicatorLabel = new QLabel());
+    busyIndicatorLabel->setMovie(busyIndicatorMovie = new QMovie("active.gif"));
 
-    xmrstak_main(argvStrings.size(), (char**)argv); 
+    QToolBar* toolBar;
+    controlsWidget->layout()->addWidget(toolBar = new QToolBar());
+    QMenu* menu = new QMenu(this);
+
+    toolBar->addAction(pauseAction = new QAction("&Pause"));
+    menu->addAction(pauseAction);
+    connect(pauseAction, &QAction::triggered, this, &MainWindow::onPauseButtonClicked);
+    toolBar->addAction(resumeAction = new QAction("&Resume"));
+    menu->addAction(resumeAction);
+    connect(resumeAction, &QAction::triggered, this, &MainWindow::onResumeButtonClicked);
+    toolBar->addAction(infoAction = new QAction("&Info"));
+    menu->addAction(infoAction);
+    connect(infoAction, &QAction::triggered, this, &MainWindow::onInfoButtonClicked);
+    sti->setContextMenu(menu);
+    sti->show();
 
     updateTimer = new QTimer(this);
-    connect(updateTimer, SIGNAL(timeout()), this, SLOT(onUpdateStats()));
-    updateTimer->start(2*1000);
+    //connect(updateTimer, SIGNAL(timeout()), this, SLOT(onUpdateStats()));
+
+    onResumeButtonClicked();
+
+    SetPriorityClass((HANDLE)(QCoreApplication::instance()->applicationPid()), IDLE_PRIORITY_CLASS);
+}
+
+void MainWindow::onResumeButtonClicked() {
+    if (paused) { 
+        std::vector<std::string> argvStrings;
+        argvStrings.push_back("");
+        argvStrings.push_back("--noTest");  
+        const char* argv[2] = { argvStrings[0].c_str() , argvStrings[1].c_str() }; 
+
+        xmrstak = new XMRStak();
+        xmrstak->_main(argvStrings.size(), (char**)argv);
+
+        paused = false;
+        updateButtonState();
+        updateTimer->start(2 * 1000);
+        busyIndicatorMovie->start();
+        busyIndicatorLabel->setVisible(true);
+    }
+}
+
+void MainWindow::onPauseButtonClicked() {
+    if (!paused) { 
+        paused = true;
+        updateTimer->stop();
+        busyIndicatorMovie->stop();
+        busyIndicatorLabel->setVisible(false);
+        statsLabel->setText(tr("Paused"));
+
+        xmrstak->terminate();
+        delete xmrstak;
+        xmrstak = nullptr;
+
+        updateButtonState();
+    }
+}
+
+void MainWindow::updateButtonState() {
+    pauseAction->setEnabled(!paused);
+    resumeAction->setEnabled(paused);
 }
 
 void MainWindow::onUpdateStats() {
-    double totalHashRate = get_hashrate(10000);
-    size_t threadCount = get_threadcount(); 
+    if (!paused) {
+        double totalHashRate = xmrstak->get_hashrate(10000);
+        size_t threadCount = xmrstak->get_threadcount();
 
-
-    std::stringstream ss;
-    std::string q = " kmgtep";
-    unsigned int z = 0;
-    while (z + 1 < q.length() && totalHashRate > 1000) { z++; totalHashRate /= 1000; }
-    ss << threadCount << " threads, " << totalHashRate << (z > 0 ? " " : "") << q[z] << "hashes/s";
-    statsLabel->setText(ss.str().c_str());
+        std::stringstream ss;
+        std::string q = " kmgtep";
+        unsigned int z = 0;
+        while (z + 1 < q.length() && totalHashRate > 1000) { z++; totalHashRate /= 1000; }
+        ss << threadCount << " threads, " << totalHashRate << (z > 0 ? " " : "") << q[z] << "hashes/s";
+        statsLabel->setText(ss.str().c_str());
+    }
 }
 
-MainWindow::~MainWindow()
-{
+MainWindow::~MainWindow() {
 
 }

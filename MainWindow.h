@@ -6,6 +6,11 @@
 class QWidget;
 class QLabel;
 class QTimer;
+class QPushButton;
+class QAction;
+class QMovie;
+
+class XMRStak;
 
 class MainWindow : public QMainWindow
 {
@@ -15,11 +20,20 @@ public:
     ~MainWindow();
 private slots: 
     void onInfoButtonClicked();
+    void onPauseButtonClicked();
+    void onResumeButtonClicked();
     void onUpdateStats();
 private:
-    QTimer* updateTimer;
-    QWidget* mainWidget;
-    QLabel  *statsLabel;
+    bool paused = true;
+    XMRStak* xmrstak = nullptr;
+
+    QTimer *updateTimer;
+    QWidget *mainWidget;
+    QLabel  *statsLabel, *busyIndicatorLabel;
+    QAction *pauseAction, *resumeAction, *quitAction, *infoAction;
+    QMovie* busyIndicatorMovie;
+
+    void updateButtonState();
 };
 
 #endif // MAINWINDOW_H

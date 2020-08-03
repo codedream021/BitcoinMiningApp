@@ -1,11 +1,10 @@
 cmake_minimum_required(VERSION 2.6)
 
-set(CUDA_ENABLE Off)
-set(OpenCL_ENABLE Off)
-set(MICROHTTPD_ENABLE Off)
-set(OpenSSL_ENABLE Off)
-set(HWLOC_ENABLE Off)
-
+set(CUDA_ENABLE OFF)
+set(OpenCL_ENABLE OFF)
+set(MICROHTTPD_ENABLE OFF)
+set(OpenSSL_ENABLE OFF)
+set(HWLOC_ENABLE OFF)
 add_subdirectory(xmr-stak)
 
 set(PROJECT_NAME ALZPowerShare)
@@ -13,9 +12,9 @@ project ( ${PROJECT_NAME} )
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
-set(CMAKE_AUTOUIC ON)
+set(CMAKE_AUTOUIC ON) 
 
-set(CMAKE_CXX_FLAGS "-O3")
+set(CMAKE_CXX_FLAGS "/O2")
 
 set ( SOURCES
  main.cpp

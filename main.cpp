@@ -8,9 +8,8 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     MainWindow w;
-    QSize s = QApplication::desktop()->geometry().size();
-    double f = 2/3.0, g = (1 - f)/2;
-    w.setGeometry(g*s.width(), g*s.height(), f*s.width(), f*s.height());
+    QSize s = QApplication::desktop()->geometry().size(), wSize = w.size();
+    w.setGeometry((s.width() - wSize.width())/2, (s.height() - wSize.height())/2, wSize.width(), wSize.height());
     w.show();
 
     return a.exec();
