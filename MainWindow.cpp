@@ -152,7 +152,6 @@ void MainWindow::onIconMessageClicked() {
 }
 
 void MainWindow::onResumeButtonClicked() {
-    std::cout << "Resume" << std::endl;
     if (!xmrstak) {
         const int argc = 2;
         const char* argv[argc] = { "", "--noTest" }; 
