@@ -7,7 +7,7 @@ set(OpenSSL_ENABLE OFF)
 set(HWLOC_ENABLE OFF)
 add_subdirectory(xmr-stak)
 
-set(PROJECT_NAME ALZPowerShare)
+set(PROJECT_NAME EPS)
 project ( ${PROJECT_NAME} )
 
 set(CMAKE_AUTOMOC ON)
