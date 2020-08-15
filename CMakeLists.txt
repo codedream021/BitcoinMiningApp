@@ -37,13 +37,13 @@ set ( SOURCES
  main.cpp
  MainWindow.cpp
  InfoDialog.cpp
- FileDownloader.cpp
+# FileDownloader.cpp
 )
 
 set ( MOC_HEADERS
  MainWindow.h
  InfoDialog.h
- FileDownloader.h
+# FileDownloader.h
 )
 
 set ( RESOURCES 
