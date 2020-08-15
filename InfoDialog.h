@@ -1,6 +1,5 @@
-#ifndef INFODIALOG_H
-#define INFODIALOG_H
- 
+#pragma once
+
 #include <QtWidgets/QDialog>
 
 class QPushButton;
@@ -26,6 +25,4 @@ class LicenseDialog : public QDialog
 public:
     explicit LicenseDialog(const QString& library, QWidget* parent);
 private:
-};
-
-#endif // INFODIALOG_H
+}; 
