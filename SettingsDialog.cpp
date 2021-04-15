@@ -10,8 +10,11 @@ SettingsDialog::SettingsDialog(QWidget* parent) : QDialog(parent)
 
     layout()->addWidget(loadSlider = new QSlider());
     loadSlider->setMaximum(loadSliderMax);
+<<<<<<< HEAD
     loadSlider->setValue(1);
     loadSlider->setOrientation(Qt::Horizontal);
+=======
+>>>>>>> 51ea25f571f17f36eb4fb357672fc1b40b3a23e5
 
     QDialogButtonBox* buttonBox;
     layout()->addWidget(buttonBox = new QDialogButtonBox(QDialogButtonBox::Save | QDialogButtonBox::Cancel));
@@ -20,5 +23,9 @@ SettingsDialog::SettingsDialog(QWidget* parent) : QDialog(parent)
 }
 
 double SettingsDialog::getChosenLoadFraction() {
+<<<<<<< HEAD
     return loadSlider->value() / loadSliderMax;
+=======
+    return loadSlider->position() / loadSliderMax;
+>>>>>>> 51ea25f571f17f36eb4fb357672fc1b40b3a23e5
 }

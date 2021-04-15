@@ -15,7 +15,11 @@ class QSystemTrayIcon;
 class QMenu;
 class QToolBar;
 
+<<<<<<< HEAD
 class FileDownloader;
+=======
+//class FileDownloader;
+>>>>>>> 51ea25f571f17f36eb4fb357672fc1b40b3a23e5
 
 class XMRStak;
 
@@ -32,8 +36,14 @@ private slots:
     void onResumeButtonClicked();
     void onSettingsButtonClicked();
     void onUpdateStats();
+<<<<<<< HEAD
     void onLatestVersionDownloaded();
     void onUpdaterDownloaded(); 
+=======
+    void onBackgroundImageDownloaded();
+    void onBusyIndicatorImageDownloaded();
+    void onTrayIconImageDownloaded();
+>>>>>>> 51ea25f571f17f36eb4fb357672fc1b40b3a23e5
     void onIconActivated(QSystemTrayIcon::ActivationReason reason);
     void onIconMessageClicked();
 protected:
@@ -41,14 +51,23 @@ protected:
 private: 
     XMRStak* xmrstak = nullptr;
 
+<<<<<<< HEAD
+=======
+    QToolBar* toolBar;
+>>>>>>> 51ea25f571f17f36eb4fb357672fc1b40b3a23e5
     QMenu* menu;
     QTimer *updateTimer;
     QLabel* backgroundImageLabel, *statsLabel;
     QAction *pauseAction, *resumeAction; 
     QSystemTrayIcon* systemTrayIcon;
+<<<<<<< HEAD
     QWidget  *toolBarWidget;
 
     FileDownloader *latestVersionFD, *updaterFD;
+=======
+
+//    FileDownloader* backgroundFD, * busyIndicatorFD, * trayIconFD;
+>>>>>>> 51ea25f571f17f36eb4fb357672fc1b40b3a23e5
 
     QAction* addAction(QAction* a);
     QAction* addAction(const QString& action);
