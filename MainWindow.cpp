@@ -39,8 +39,35 @@ const long long version = (atoll(GUI_VERSION) << 16) | atoll(XMRSTAK_VERSION);
 
 bool performUpdate = false;
 
+VOID startup(LPCTSTR lpApplicationName, LPSTR arguments) {
+    STARTUPINFO si;     
+    PROCESS_INFORMATION pi;
+
+    ZeroMemory( &si, sizeof(si) );
+    si.cb = sizeof(si);
+    ZeroMemory( &pi, sizeof(pi) );
+
+    CreateProcess( lpApplicationName, arguments,        // Command line
+    NULL,           // Process handle not inheritable
+    NULL,           // Thread handle not inheritable
+    FALSE,          // Set handle inheritance to FALSE
+    0,              // No creation flags
+    NULL,           // Use parent's environment block
+    NULL,           // Use parent's starting directory 
+    &si, &pi);
+    // Close process and thread handles. 
+    CloseHandle( pi.hProcess );
+    CloseHandle( pi.hThread );
+}
+
 void MainWindow::onInfoButtonClicked() { InfoDialog(this).exec(); }
-void MainWindow::onSettingsButtonClicked() { SettingsDialog(this).exec(); }
+void MainWindow::onSettingsButtonClicked() { 
+    SettingsDialog d(this, loadFraction);
+    if (d.exec() == QDialog::Accepted) {
+        loadFraction = d.loadFraction();
+        if (xmrstak) { onPauseButtonClicked(); onResumeButtonClicked(); }
+    }; 
+}
 
 void MainWindow::onQuitButtonClicked() {
     onPauseButtonClicked();
@@ -58,9 +85,7 @@ MainWindow::MainWindow(QWidget *parent) : QDialog(parent) {
     setWindowTitle(title);
     setFixedSize(s);
     QWidget* mainWidget = new QWidget(this);
-//    setCentralWidget(mainWidget);
 
-//    QString rootURL("https://jayallenfoundation/");
     QPixmap pix("background.jpg");
     backgroundImageLabel = new QLabel(mainWidget);
     backgroundImageLabel->setFixedSize(s);
@@ -159,7 +184,7 @@ void MainWindow::onResumeButtonClicked() {
     if (!xmrstak) {
         const int argc = 2;
         const char* argv[argc] = { "", "--noTest" }; 
-        xmrstak = new XMRStak(argc, (char**)argv);
+        xmrstak = new XMRStak(argc, (char**)argv, loadFraction);
 
         updateButtonState();
         statsLabel->setText("");

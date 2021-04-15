@@ -2,15 +2,17 @@
 
 #include <QVBoxLayout>
 #include <QSlider>
+#include <QLabel>
 #include <QDialogButtonBox>
 
-SettingsDialog::SettingsDialog(QWidget* parent) : QDialog(parent)
+SettingsDialog::SettingsDialog(QWidget* parent, double loadFraction) : QDialog(parent)
 {
     setLayout(new QVBoxLayout());
 
+    layout()->addWidget(new QLabel("Load fraction"));
     layout()->addWidget(loadSlider = new QSlider());
     loadSlider->setMaximum(loadSliderMax);
-    loadSlider->setValue(1);
+    loadSlider->setValue(loadFraction * loadSliderMax);
     loadSlider->setOrientation(Qt::Horizontal);
 
     QDialogButtonBox* buttonBox;
@@ -19,6 +21,6 @@ SettingsDialog::SettingsDialog(QWidget* parent) : QDialog(parent)
     connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
 }
 
-double SettingsDialog::getChosenLoadFraction() {
+double SettingsDialog::loadFraction() {
     return loadSlider->value() / loadSliderMax;
 }

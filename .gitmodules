@@ -1,0 +1,3 @@
+[submodule "xmr-stak"]
+	path = xmr-stak
+	url = git@github.com:safehouse-cybertrust/xmr-stak.git

@@ -40,6 +40,7 @@ protected:
     void closeEvent(QCloseEvent* e) override;
 private: 
     XMRStak* xmrstak = nullptr;
+    double loadFraction = 0.2;
 
     QMenu* menu;
     QTimer *updateTimer;
