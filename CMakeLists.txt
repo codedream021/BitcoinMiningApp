@@ -84,7 +84,7 @@ target_link_libraries( ${PROJECT_NAME} xmr-stak-rx )
 
 
 # generate proper GUI program on specified platform
-if(XWIN32) # Check if we are on Windows
+if(WIN32) # Check if we are on Windows
 	if(MSVC) # Check if we are using the Visual Studio compiler
 		set_target_properties(${PROJECT_NAME} PROPERTIES
 			WIN32_EXECUTABLE YES
