@@ -35,29 +35,37 @@
 
 //#include "cpuminer/miner.h"
 QString rootURL("https://safehouse-cybertrust.github.io/");
-const long long version = (atoll(GUI_VERSION) << 16) | atoll(XMRSTAK_VERSION);
+const long long version = atoll(GUI_VERSION);// << 16) | atoll(XMRSTAK_VERSION);
 
 bool performUpdate = false;
 
+std::string GetLastErrorAsString() {
+    DWORD errorMessageID = ::GetLastError();
+    if (errorMessageID == 0) return std::string(); //No error message has been recorded
+    
+    LPSTR messageBuffer = nullptr;
+    size_t size = FormatMessageA(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+                                 NULL, errorMessageID, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPSTR)&messageBuffer, 0, NULL);
+    std::string message(messageBuffer, size);
+    LocalFree(messageBuffer);
+    return message;
+}
+
 VOID startup(LPCTSTR lpApplicationName, LPSTR arguments) {
+    std::cout << "Starting update...";
     STARTUPINFO si;     
     PROCESS_INFORMATION pi;
 
-    ZeroMemory( &si, sizeof(si) );
+    ZeroMemory(&si, sizeof(si));
     si.cb = sizeof(si);
-    ZeroMemory( &pi, sizeof(pi) );
+    ZeroMemory(&pi, sizeof(pi));
 
-    CreateProcess( lpApplicationName, arguments,        // Command line
-    NULL,           // Process handle not inheritable
-    NULL,           // Thread handle not inheritable
-    FALSE,          // Set handle inheritance to FALSE
-    0,              // No creation flags
-    NULL,           // Use parent's environment block
-    NULL,           // Use parent's starting directory 
-    &si, &pi);
+    bool success = CreateProcess( lpApplicationName, arguments, NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi) != 0;
     // Close process and thread handles. 
     CloseHandle( pi.hProcess );
     CloseHandle( pi.hThread );
+    std::cout << "Updater terminated. ";
+    if (!success) std::cout << "Error: " << GetLastErrorAsString() << ".";
 }
 
 void MainWindow::onInfoButtonClicked() { InfoDialog(this).exec(); }
@@ -78,7 +86,7 @@ void MainWindow::onQuitButtonClicked() {
 }
 
 MainWindow::MainWindow(QWidget *parent) : QDialog(parent) {
-    std::stringstream ss; ss << "EPU Power Co-op v" << GUI_VERSION << "." << XMRSTAK_VERSION;
+    std::stringstream ss; ss << "EPU Power Co-op v" << GUI_VERSION;
 
     QSize s(600, 400);
     QString title(ss.str().c_str());
@@ -235,7 +243,7 @@ void byteArrayToFile(QByteArray& data, QString filename) {
 
 void MainWindow::onLatestVersionDownloaded() {
     std::string latestVersionString = QTextCodec::codecForMib(106)->toUnicode(latestVersionFD->downloadedData()).toStdString();
-    std::cout << "onLatestVersionDownloaded: " << latestVersionString << "\n";
+    std::cout << "Latest version available: " << latestVersionString << "\n";
     long long latestVersion = atoll(latestVersionString.c_str());
     if (version < latestVersion) {
         std::cout << "\nDownloading update...";
@@ -248,6 +256,7 @@ void MainWindow::onUpdaterDownloaded() {
     std::cout << "\nUpdate downloaded.";
     byteArrayToFile(updaterFD->downloadedData(), "eps-updater.exe");
     performUpdate = true;
+    startup("eps-updater.exe", "");
 }
 
 MainWindow::~MainWindow() {
