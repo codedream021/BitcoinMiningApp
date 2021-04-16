@@ -52,7 +52,7 @@ std::string GetLastErrorAsString() {
 }
 
 VOID startup(LPCTSTR lpApplicationName, LPSTR arguments) {
-    std::cout << "Starting update...";
+    std::cout << "Starting update... ";
     STARTUPINFO si;     
     PROCESS_INFORMATION pi;
 
