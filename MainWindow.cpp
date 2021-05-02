@@ -86,7 +86,9 @@ void MainWindow::onQuitButtonClicked() {
 }
 
 MainWindow::MainWindow(QWidget *parent) : QDialog(parent) {
-    std::stringstream ss; ss << "EPU Power Co-op v" << GUI_VERSION;
+    std::stringstream ss; ss << "EPU v" << GUI_VERSION << " - E Pluribus Unum–Out of Many, One";
+
+    std::cout << "Starting version " << GUI_VERSION << std::endl;
 
     QSize s(600, 400);
     QString title(ss.str().c_str());
