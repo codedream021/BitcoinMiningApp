@@ -8,7 +8,7 @@ set(OpenSSL_ENABLE OFF)
 set(HWLOC_ENABLE OFF)
 add_subdirectory(xmr-stak)
 
-set(PROJECT_NAME EPS)
+set(PROJECT_NAME "E-Pluribus-Unum")
 project ( ${PROJECT_NAME} )
 
 set(CMAKE_AUTOMOC ON)
@@ -33,6 +33,8 @@ execute_process(
 
 add_definitions(-DGUI_VERSION="${GUI_VERSION}")
 add_definitions(-DXMRSTAK_VERSION="${XMRSTAK_VERSION}")
+
+message(STATUS "Version = ${GUI_VERSION}")
 
 set ( SOURCES
  main.cpp
