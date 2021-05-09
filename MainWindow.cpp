@@ -23,6 +23,9 @@
 #include <QFile>
 #include <QString>
 #include <QTextCodec>
+#include <QSettings>
+#include <QFileInfo>
+#include <QDir>
 
 #include <Windows.h>
 //#include <processthreadsapi.h>
@@ -70,10 +73,13 @@ VOID startup(LPCTSTR lpApplicationName, LPSTR arguments) {
 
 void MainWindow::onInfoButtonClicked() { InfoDialog(this).exec(); }
 void MainWindow::onSettingsButtonClicked() { 
-    SettingsDialog d(this, loadFraction);
+    SettingsDialog d(this, loadFraction, autoStart);
     if (d.exec() == QDialog::Accepted) {
-        loadFraction = d.loadFraction();
-        if (xmrstak) { onPauseButtonClicked(); onResumeButtonClicked(); }
+        bool changed = false;
+        if (loadFraction != d.loadFraction()) { changed = true; loadFraction = d.loadFraction(); }        
+        if (autoStart != d.autoStart()) { autoStart = d.autoStart(); setAutoStart(autoStart); }
+        
+        if (changed && xmrstak) { onPauseButtonClicked(); onResumeButtonClicked(); }
     }; 
 }
 
@@ -87,11 +93,16 @@ void MainWindow::onQuitButtonClicked() {
 
 HANDLE hAppMutex;
 
-MainWindow::MainWindow(QWidget *parent) : QDialog(parent) {
+MainWindow::MainWindow(bool firstRun, QWidget *parent) : QDialog(parent) {
+    // Single instance mutex
     hAppMutex = CreateMutex(NULL, TRUE, (LPCSTR) "safehouse-cybertrust");
-    std::cout << "Creating single instance mutex..." << std::endl;
     if (GetLastError() == ERROR_ALREADY_EXISTS) { QCoreApplication::quit(); exit(0); return; }
-    std::cout << "single instance mutex created. " << GetLastError() << std::endl;
+
+    // Go to executalbe path
+    QDir::setCurrent(QFileInfo(QCoreApplication::applicationFilePath()).absoluteDir().absolutePath());
+ 
+    if (firstRun) setAutoStart(true);
+    autoStart = getAutoStart();
     
     // rest of the program
     
@@ -268,6 +279,21 @@ void MainWindow::onUpdaterDownloaded() {
     byteArrayToFile(updaterFD->downloadedData(), "eps-updater.exe");
     performUpdate = true;
     startup("eps-updater.exe", "");
+}
+
+const QString appStartKey = "E-Pluribus-Unum";
+
+bool MainWindow::getAutoStart() {
+    QSettings s("HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", QSettings::NativeFormat);
+    QString path = QCoreApplication::applicationFilePath();
+    return s.contains(appStartKey);
+}
+
+void MainWindow::setAutoStart(bool autoStart) {
+    std::cout << "Setting autostart = " << autoStart << std::endl;
+    QSettings s("HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", QSettings::NativeFormat);
+    QString path = "\"" + QCoreApplication::applicationFilePath().replace("/", "\\") + "\" /silent";
+    if (autoStart) { s.setValue(appStartKey, path);  std::cout << "SetValue = " << appStartKey.toStdString() << ": " << path.toStdString() << std::endl; } else { s.remove(appStartKey); }
 }
 
 MainWindow::~MainWindow() {

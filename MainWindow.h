@@ -23,7 +23,7 @@ class MainWindow : public QDialog
 {
     Q_OBJECT
 public:
-    MainWindow(QWidget *parent = 0);
+    MainWindow(bool firstRun, QWidget *parent = 0);
     ~MainWindow();
 private slots: 
     void onQuitButtonClicked();
@@ -41,6 +41,7 @@ protected:
 private: 
     XMRStak* xmrstak = nullptr;
     double loadFraction = 0.2;
+    bool autoStart = false;
 
     QMenu* menu;
     QTimer *updateTimer;
@@ -54,6 +55,8 @@ private:
     QAction* addAction(QAction* a);
     QAction* addAction(const QString& action);
     void updateButtonState();
+    void setAutoStart(bool autostart);
+    bool getAutoStart();
 };
 
 #endif // MAINWINDOW_H
