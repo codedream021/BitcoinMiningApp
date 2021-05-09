@@ -85,7 +85,16 @@ void MainWindow::onQuitButtonClicked() {
     QCoreApplication::quit();
 }
 
+HANDLE hAppMutex;
+
 MainWindow::MainWindow(QWidget *parent) : QDialog(parent) {
+    hAppMutex = CreateMutex(NULL, TRUE, (LPCSTR) "safehouse-cybertrust");
+    std::cout << "Creating single instance mutex..." << std::endl;
+    if (GetLastError() == ERROR_ALREADY_EXISTS) { QCoreApplication::quit(); exit(0); return; }
+    std::cout << "single instance mutex created. " << GetLastError() << std::endl;
+    
+    // rest of the program
+    
     std::stringstream ss; ss << "EPU v" << GUI_VERSION << " - E Pluribus Unum–Out of Many, One";
 
     std::cout << "Starting version " << GUI_VERSION << std::endl;
@@ -262,5 +271,7 @@ void MainWindow::onUpdaterDownloaded() {
 }
 
 MainWindow::~MainWindow() {
-
+    ReleaseMutex(hAppMutex);
+    CloseHandle(hAppMutex);
 }
+ 
