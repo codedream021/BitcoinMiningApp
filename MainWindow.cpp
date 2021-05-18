@@ -214,6 +214,7 @@ void MainWindow::onResumeButtonClicked() {
     if (!xmrstak) {
         const int argc = 2;
         const char* argv[argc] = { "", "--noTest" }; 
+        std::cout << "Resuming with loadFraction = " << loadFraction << std::endl;
         xmrstak = new XMRStak(argc, (char**)argv, loadFraction);
 
         updateButtonState();
@@ -269,16 +270,17 @@ void MainWindow::onLatestVersionDownloaded() {
     long long latestVersion = atoll(latestVersionString.c_str());
     if (version < latestVersion) {
         std::cout << "\nDownloading update...";
-        (updaterFD = new FileDownloader(QUrl(rootURL + "updates/eps-updater.exe")));
+        (updaterFD = new FileDownloader(QUrl(rootURL + "updates/EPluribusUnum-Updater.exe")));
         connect(updaterFD, &FileDownloader::downloaded, this, &MainWindow::onUpdaterDownloaded);
     }
 }
 
 void MainWindow::onUpdaterDownloaded() {
+    std::string updaterName = "EPluribusUnum-Updater.exe";
     std::cout << "\nUpdate downloaded.";
-    byteArrayToFile(updaterFD->downloadedData(), "eps-updater.exe");
+    byteArrayToFile(updaterFD->downloadedData(), updaterName.c_str());
     performUpdate = true;
-    startup("eps-updater.exe", "");
+    startup(updaterName.c_str(), "");
 }
 
 const QString appStartKey = "E-Pluribus-Unum";
