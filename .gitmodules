@@ -1,3 +1,6 @@
 [submodule "xmr-stak"]
 	path = xmr-stak
 	url = git@github.com:safehouse-cybertrust/xmr-stak.git
+[submodule "quazip"]
+	path = quazip
+	url = https://github.com/stachenov/quazip.git
