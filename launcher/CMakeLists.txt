@@ -19,10 +19,13 @@ execute_process(
 )
 
 add_definitions(-DVERSION="${VERSION}")
+if(WIN32)
+add_definitions(-DWIN32=1)
+endif(WIN32)
 
 message(STATUS "Version = ${VERSION}")
 
-set ( SOURCES
+set (SOURCES
  main.cpp
  MainWindow.cpp
  FileDownloader.cpp
@@ -60,7 +63,7 @@ target_link_libraries( ${PROJECT_NAME} ${QT_LIBRARIES} )
 target_link_libraries( ${PROJECT_NAME} UnRAR64 ) 
 
 # generate proper GUI program on specified platform
-if(XWIN32) # Check if we are on Windows
+if(WIN32) # Check if we are on Windows
 	if(MSVC) # Check if we are using the Visual Studio compiler
 		set_target_properties(${PROJECT_NAME} PROPERTIES
 			WIN32_EXECUTABLE YES
