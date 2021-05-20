@@ -6,7 +6,9 @@ set(OpenCL_ENABLE OFF)
 set(MICROHTTPD_ENABLE OFF)
 set(OpenSSL_ENABLE OFF)
 set(HWLOC_ENABLE OFF)
+set(MHTD "")
 add_subdirectory(xmr-stak)
+add_subdirectory(launcher)
 
 set(PROJECT_NAME "E-Pluribus-Unum")
 project ( ${PROJECT_NAME} )
@@ -15,19 +17,12 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON) 
 
-set(CMAKE_CXX_FLAGS "/O2")
+#set(CMAKE_CXX_FLAGS "/O2")
 
 execute_process(
 	COMMAND git rev-list --count HEAD
 	WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
 	OUTPUT_VARIABLE GUI_VERSION
-	OUTPUT_STRIP_TRAILING_WHITESPACE
-)
-
-execute_process(
-	COMMAND git rev-list --count HEAD
-	WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/xmr-stak
-	OUTPUT_VARIABLE XMRSTAK_VERSION
 	OUTPUT_STRIP_TRAILING_WHITESPACE
 )
 
