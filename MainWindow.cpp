@@ -27,7 +27,9 @@
 #include <QFileInfo>
 #include <QDir>
 
+#ifdef WIN32
 #include <Windows.h>
+#endif
 //#include <processthreadsapi.h>
 
 #include "InfoDialog.h"
@@ -42,6 +44,7 @@ const long long version = atoll(GUI_VERSION);// << 16) | atoll(XMRSTAK_VERSION);
 
 bool performUpdate = false;
 
+#ifdef WIN32
 std::string GetLastErrorAsString() {
     DWORD errorMessageID = ::GetLastError();
     if (errorMessageID == 0) return std::string(); //No error message has been recorded
@@ -70,6 +73,7 @@ VOID startup(LPCTSTR lpApplicationName, LPSTR arguments) {
     std::cout << "Updater terminated. ";
     if (!success) std::cout << "Error: " << GetLastErrorAsString() << ".";
 }
+#endif
 
 void MainWindow::onInfoButtonClicked() { InfoDialog(this).exec(); }
 void MainWindow::onSettingsButtonClicked() { 
@@ -91,13 +95,15 @@ void MainWindow::onQuitButtonClicked() {
     QCoreApplication::quit();
 }
 
+#ifdef WIN32
 HANDLE hAppMutex;
-
+#endif
 MainWindow::MainWindow(bool firstRun, QWidget *parent) : QDialog(parent) {
     // Single instance mutex
+#ifdef WIN32
     hAppMutex = CreateMutex(NULL, TRUE, (LPCSTR) "safehouse-cybertrust");
     if (GetLastError() == ERROR_ALREADY_EXISTS) { QCoreApplication::quit(); exit(0); return; }
-
+#endif
     // Go to executalbe path
     QDir::setCurrent(QFileInfo(QCoreApplication::applicationFilePath()).absoluteDir().absolutePath());
  
@@ -176,10 +182,9 @@ MainWindow::MainWindow(bool firstRun, QWidget *parent) : QDialog(parent) {
 
     onResumeButtonClicked();
 
+#ifdef WIN32
     SetPriorityClass((HANDLE)(QCoreApplication::instance()->applicationPid()), IDLE_PRIORITY_CLASS);
-
-    (latestVersionFD = new FileDownloader(QUrl(rootURL + "updates/version.txt")));
-    connect(latestVersionFD, &FileDownloader::downloaded, this, &MainWindow::onLatestVersionDownloaded);
+#endif
 }
 
 QAction* MainWindow::addAction(const QString& caption) {
@@ -257,49 +262,29 @@ void MainWindow::onUpdateStats() {
     }
 }
 
-void byteArrayToFile(QByteArray& data, QString filename) {
-    QFile f(filename);
-    f.open(QIODevice::WriteOnly);
-    f.write(data);
-    f.close();
-}
-
-void MainWindow::onLatestVersionDownloaded() {
-    std::string latestVersionString = QTextCodec::codecForMib(106)->toUnicode(latestVersionFD->downloadedData()).toStdString();
-    std::cout << "Latest version available: " << latestVersionString << "\n";
-    long long latestVersion = atoll(latestVersionString.c_str());
-    if (version < latestVersion) {
-        std::cout << "\nDownloading update...";
-        (updaterFD = new FileDownloader(QUrl(rootURL + "updates/EPluribusUnum-Updater.exe")));
-        connect(updaterFD, &FileDownloader::downloaded, this, &MainWindow::onUpdaterDownloaded);
-    }
-}
-
-void MainWindow::onUpdaterDownloaded() {
-    std::string updaterName = "EPluribusUnum-Updater.exe";
-    std::cout << "\nUpdate downloaded.";
-    byteArrayToFile(updaterFD->downloadedData(), updaterName.c_str());
-    performUpdate = true;
-    startup(updaterName.c_str(), "");
-}
-
 const QString appStartKey = "E-Pluribus-Unum";
 
 bool MainWindow::getAutoStart() {
+#ifdef WIN32
     QSettings s("HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", QSettings::NativeFormat);
     QString path = QCoreApplication::applicationFilePath();
     return s.contains(appStartKey);
+#endif
 }
 
 void MainWindow::setAutoStart(bool autoStart) {
+#ifdef WIN32
     std::cout << "Setting autostart = " << autoStart << std::endl;
     QSettings s("HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", QSettings::NativeFormat);
     QString path = "\"" + QCoreApplication::applicationFilePath().replace("/", "\\") + "\" /silent";
     if (autoStart) { s.setValue(appStartKey, path);  std::cout << "SetValue = " << appStartKey.toStdString() << ": " << path.toStdString() << std::endl; } else { s.remove(appStartKey); }
+#endif
 }
 
 MainWindow::~MainWindow() {
+#ifdef WIN32
     ReleaseMutex(hAppMutex);
     CloseHandle(hAppMutex);
+#endif
 }
  

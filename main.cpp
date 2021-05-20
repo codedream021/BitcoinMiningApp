@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <string>
+#include <iostream>
 
 #include <QApplication>
 #include <QDesktopWidget>
@@ -16,10 +17,14 @@ int main(int argc, char *argv[])
     for (int q = 1; q < argc; ++q) args.push_back(argv[q]);
 
     bool silent = false, firstRun = false;
-    for (int q = 0; q < args.size(); ++q) {
+    std::cout << "Args = ";
+    for (size_t q = 0; q < args.size(); ++q) { std::cout << "'" << args[q] << "', ";
         if (args[q] == std::string("/silent")) silent = true;
         if (args[q] == std::string("/firstRun")) firstRun = true;
     }
+    std::cout << std::endl;
+
+    std::cout << "Silent = " << silent << " firstRun = " << firstRun << std::endl;
 
     MainWindow w(firstRun);
     QSize s = QApplication::desktop()->geometry().size(), wSize = w.size();

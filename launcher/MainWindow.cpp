@@ -27,7 +27,9 @@
 #include <QFileInfo>
 #include <QDir>
 
+#ifdef WIN32
 #include <Windows.h>
+#endif
 
 #include "FileDownloader.h"
 
@@ -37,6 +39,7 @@ QString rootURL("https://safehouse-cybertrust.github.io/");
 
 bool performUpdate = false;
 
+#ifdef WIN32
 std::string GetLastErrorAsString() {
     DWORD errorMessageID = ::GetLastError();
     if (errorMessageID == 0) return std::string(); //No error message has been recorded
@@ -67,11 +70,14 @@ VOID startup(LPCTSTR lpApplicationName, LPSTR arguments) {
 }
 
 HANDLE hAppMutex;
+#endif
 
 MainWindow::MainWindow(bool iSilent, bool iFirstRun, QWidget *parent) : QDialog(parent), silent(iSilent), firstRun(iFirstRun) {
     // Single instance mutex
+#ifdef WIN32
     hAppMutex = CreateMutex(NULL, TRUE, (LPCSTR) "safehouse-cybertrust-EPU-launcher");
     if (GetLastError() == ERROR_ALREADY_EXISTS) { QCoreApplication::quit(); exit(0); return; }
+#endif
 
     // Go to executable path
     QDir::setCurrent(QFileInfo(QCoreApplication::applicationFilePath()).absoluteDir().absolutePath());
@@ -93,11 +99,12 @@ MainWindow::MainWindow(bool iSilent, bool iFirstRun, QWidget *parent) : QDialog(
 
     (latestVersionFD = new FileDownloader(QUrl(rootURL + "updates/version.txt")));
     connect(latestVersionFD, &FileDownloader::downloaded, this, &MainWindow::onLatestVersionDownloaded);
+    connect(latestVersionFD, &FileDownloader::error, this, &MainWindow::onUpdaterDownloadError);
 }
 
 void MainWindow::closeEvent(QCloseEvent* e) { hide(); e->ignore(); }
 
-void byteArrayToFile(QByteArray& data, QString filename) {
+void byteArrayToFile(const QByteArray& data, QString filename) {
     QFile f(filename);
     f.open(QIODevice::WriteOnly);
     f.write(data);
@@ -123,7 +130,7 @@ void MainWindow::onLatestVersionDownloaded() {
         msgLabel->setText("Downloading update...");
 
         std::cout << "\nDownloading update..." << std::endl;
-        (updaterFD = new FileDownloader(QUrl(rootURL + "updates/update.rar")));
+        (updaterFD = new FileDownloader(QUrl(rootURL + "updates/update.dat")));
         connect(updaterFD, &FileDownloader::downloaded, this, &MainWindow::onUpdaterDownloaded);
         connect(updaterFD, &FileDownloader::error, this, &MainWindow::onUpdaterDownloadError);
     } else launchApp();
@@ -151,10 +158,11 @@ const QString appStartKey = "E-Pluribus-Unum";
 void MainWindow::launchApp() {
     msgLabel->setText("Launching...");
     std::string args = "";
-    if (silent) args += "/silent";
-    if (firstRun) args += "/firstRun";
-    std::cout << "\nLaunching app..." << std::endl;
-    startup("E-Pluribus-Unum.exe", (char*) args.c_str());
+    if (silent) args += " /silent";
+    if (firstRun) args += " /firstRun";
+    std::cout << "\nLaunching app with args '" << args << "'..." << std::endl;
+    std::string appName = "E-Pluribus-Unum.exe";
+    startup(appName.c_str(), (char*) (appName + args).c_str());
     std::cout << "\nQuitting..." << std::endl;
     close();
     QCoreApplication::quit();

@@ -32,8 +32,6 @@ private slots:
     void onResumeButtonClicked();
     void onSettingsButtonClicked();
     void onUpdateStats();
-    void onLatestVersionDownloaded();
-    void onUpdaterDownloaded(); 
     void onIconActivated(QSystemTrayIcon::ActivationReason reason);
     void onIconMessageClicked();
 protected:
