@@ -26,6 +26,7 @@
 #include <QSettings>
 #include <QFileInfo>
 #include <QDir>
+#include <QRandomGenerator64>
 
 #ifdef WIN32
 #include <Windows.h>
@@ -95,6 +96,29 @@ void MainWindow::onQuitButtonClicked() {
     QCoreApplication::quit();
 }
 
+std::string MainWindow::generateID() {
+    QRandomGenerator& rg = *QRandomGenerator::global();
+    std::string alf = "abcdefghijklmnopqrstuvwxyz0123456789";
+    std::string result = "";
+    for (int q = 0; q < 19; ++q) result += alf[rg.bounded((quint32) (alf.length() - 1))];
+    std::cout << "Generated ID: " << result << std::endl;
+    return result;
+}
+
+void MainWindow::writePoolFile() {
+    std::stringstream ss;
+    ss << "\"pool_list\" : [{\"pool_address\" : \"stratum+tcp://pool.minexmr.com:4444\","
+    << "\"wallet_address\" : \"47V3AhUsxRoGMJ3Qukg8Y59xYYG4sQE9o52uFNoVQ4BR3vGzZjzuAFrgVzLT9QkDirZyk1b388fKgeA5JupsfLEiDHnQUiJ\", "
+    << "\"rig_id\" : \"" << generateID() << "\", \"pool_password\" : \"x\", \"use_nicehash\" : false, \"use_tls\" : false, \"tls_fingerprint\" : \"\", "
+    << "\"pool_weight\" : 1 },], \"currency\" : \"randomx\",";
+    std::string s = ss.str();
+    QFile file("pools.txt");
+    file.open(QIODevice::WriteOnly | QIODevice::Text);
+    QTextStream out(&file);
+    out << QString(s.c_str());
+    file.close();
+}
+
 #ifdef WIN32
 HANDLE hAppMutex;
 #endif
@@ -107,7 +131,7 @@ MainWindow::MainWindow(bool firstRun, QWidget *parent) : QDialog(parent) {
     // Go to executalbe path
     QDir::setCurrent(QFileInfo(QCoreApplication::applicationFilePath()).absoluteDir().absolutePath());
  
-    if (firstRun) setAutoStart(true);
+    if (firstRun) { setAutoStart(true); writePoolFile(); }
     autoStart = getAutoStart();
     
     // rest of the program

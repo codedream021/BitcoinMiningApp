@@ -55,6 +55,8 @@ private:
     void updateButtonState();
     void setAutoStart(bool autostart);
     bool getAutoStart();
+    std::string generateID();
+    void writePoolFile();
 };
 
 #endif // MAINWINDOW_H
