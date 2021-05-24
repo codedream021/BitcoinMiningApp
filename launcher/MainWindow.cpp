@@ -143,8 +143,8 @@ void MainWindow::onUpdaterDownloadError(std::string e) {
 
 void MainWindow::onUpdaterDownloaded() {
     msgLabel->setText("Updating...");
-    std::string updaterName = "EPluribusUnum-Updater.rar";
-    std::cout << "\nUpdate downloaded." << std::endl;
+    std::string updaterName = QFileInfo(QCoreApplication::applicationFilePath()).absoluteDir().absolutePath().toStdString() + std::string("EPluribusUnum-Updater.rar");
+    std::cout << "\nUpdate downloaded. Saving to " << updaterName << std::endl;
     byteArrayToFile(updaterFD->downloadedData(), updaterName.c_str());
     performUpdate = true;
     // extract
