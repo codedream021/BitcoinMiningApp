@@ -9,7 +9,11 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON) 
 
-set(CMAKE_CXX_FLAGS "/O2")
+if(WIN32)
+    set(CMAKE_CXX_FLAGS "/O2")
+else()
+    set(CMAKE_CXX_FLAGS "-O3")
+endif()
 
 execute_process(
 	COMMAND git rev-list --count HEAD
@@ -63,7 +67,7 @@ target_link_libraries( ${PROJECT_NAME} ${QT_LIBRARIES} )
 target_link_libraries( ${PROJECT_NAME} UnRAR64 ) 
 
 # generate proper GUI program on specified platform
-if(WIN32) # Check if we are on Windows
+if(XWIN32) # Check if we are on Windows
 	if(MSVC) # Check if we are using the Visual Studio compiler
 		set_target_properties(${PROJECT_NAME} PROPERTIES
 			WIN32_EXECUTABLE YES
@@ -78,4 +82,4 @@ elseif(APPLE)
 	# Nothing special required
 #else()
 #	message(SEND_ERROR "You are on an unsupported platform! (Not Win32, Mac OS X or Unix)")
-endif(WIN32)
+endif()

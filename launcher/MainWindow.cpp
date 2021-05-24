@@ -156,6 +156,7 @@ void MainWindow::onUpdaterDownloaded() {
 const QString appStartKey = "E-Pluribus-Unum";
 
 void MainWindow::launchApp() {
+#ifdef WIN32
     msgLabel->setText("Launching...");
     std::string args = "";
     if (silent) args += " /silent";
@@ -166,10 +167,13 @@ void MainWindow::launchApp() {
     std::cout << "\nQuitting..." << std::endl;
     close();
     QCoreApplication::quit();
+#endif
 }
 
 MainWindow::~MainWindow() {
+#ifdef WIN32
     ReleaseMutex(hAppMutex);
     CloseHandle(hAppMutex);
+#endif
 }
  

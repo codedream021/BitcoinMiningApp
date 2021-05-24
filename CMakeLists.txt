@@ -8,7 +8,9 @@ set(OpenSSL_ENABLE OFF)
 set(HWLOC_ENABLE OFF)
 set(MHTD "")
 add_subdirectory(xmr-stak)
+#if(WIN32)
 add_subdirectory(launcher)
+#endif()
 
 set(PROJECT_NAME "E-Pluribus-Unum")
 project ( ${PROJECT_NAME} )
@@ -17,7 +19,11 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON) 
 
-#set(CMAKE_CXX_FLAGS "/O2")
+if(WIN32)
+    set(CMAKE_CXX_FLAGS "/O2")
+else()
+    set(CMAKE_CXX_FLAGS "-O3")
+endif()
 
 execute_process(
 	COMMAND git rev-list --count HEAD
@@ -27,7 +33,10 @@ execute_process(
 )
 
 add_definitions(-DGUI_VERSION="${GUI_VERSION}")
-add_definitions(-DXMRSTAK_VERSION="${XMRSTAK_VERSION}")
+#add_definitions(-DXMRSTAK_VERSION="${XMRSTAK_VERSION}")
+if(WIN32)
+add_definitions(-DWIN32=1)
+endif(WIN32)
 
 message(STATUS "Version = ${GUI_VERSION}")
 
