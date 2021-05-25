@@ -147,8 +147,7 @@ void MainWindow::onUpdaterDownloadError(std::string e) {
 
 void MainWindow::onUpdaterDownloaded() {
     msgLabel->setText("Updating...");
-    std::string updaterName = QFileInfo(QCoreApplication::applicationFilePath()).absoluteDir().absolutePath().toStdString()
-            + std::string("\\update.dat");
+    std::string updaterName = "update.dat";
     std::cout << "\nUpdate downloaded. Saving to " << updaterName << std::endl;
     byteArrayToFile(updaterFD->downloadedData(), updaterName.c_str());
     performUpdate = true;
