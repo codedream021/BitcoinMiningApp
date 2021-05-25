@@ -107,8 +107,12 @@ void MainWindow::closeEvent(QCloseEvent* e) { hide(); e->ignore(); }
 void byteArrayToFile(const QByteArray& data, QString filename) {
     QFile f(filename);
     f.open(QIODevice::WriteOnly);
-    f.write(data);
-    f.close();
+    if (f.isOpen()) {
+        f.write(data);
+        f.close();
+    } else {
+        std::cout << "Failed to open file '" << filename.toStdString() << "'. GetLastError = " << GetLastErrorAsString() << std::endl;
+    }
 }
 
 void MainWindow::onLatestVersionDownloaded() {
