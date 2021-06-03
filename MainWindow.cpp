@@ -128,9 +128,11 @@ MainWindow::MainWindow(bool firstRun, QWidget *parent) : QDialog(parent) {
     hAppMutex = CreateMutex(NULL, TRUE, (LPCSTR) "safehouse-cybertrust");
     if (GetLastError() == ERROR_ALREADY_EXISTS) { QCoreApplication::quit(); exit(0); return; }
 #endif
-    // Go to executalbe path
+    // Go to executable path
     QDir::setCurrent(QFileInfo(QCoreApplication::applicationFilePath()).absoluteDir().absolutePath());
  
+    std::cout << "Current dir = " << QFileInfo(QCoreApplication::applicationFilePath()).absoluteDir().absolutePath().toStdString() << std::endl;
+
     if (firstRun) { setAutoStart(true); writePoolFile(); }
     autoStart = getAutoStart();
     
@@ -178,7 +180,7 @@ MainWindow::MainWindow(bool firstRun, QWidget *parent) : QDialog(parent) {
 
     botWidget->layout()->addWidget(statsLabel = new QLabel());
     statsLabel->setAlignment(Qt::AlignCenter);
-//    statsLabel->setStyleSheet("QLabel { background: rgba(255, 255, 255, 68); border-radius: 3px }");
+    statsLabel->setStyleSheet("QLabel { color: rgba(0, 0, 0, 255); border-radius: 3px }");
     statsLabel->setFixedWidth((1119*s.width())/2400);
     botWidget->layout()->addWidget(new QWidget());
 

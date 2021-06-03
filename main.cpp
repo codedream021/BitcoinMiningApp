@@ -7,6 +7,10 @@
 #include <QApplication>
 #include <QDesktopWidget>
 #include <QSize>
+#include <QFile>
+#include <QFileInfo>
+#include <QDir>
+#include <QCoreApplication>
 
 int main(int argc, char *argv[])
 {
@@ -23,6 +27,8 @@ int main(int argc, char *argv[])
         if (args[q] == std::string("/firstRun")) firstRun = true;
     }
     std::cout << std::endl;
+
+    firstRun = firstRun || !QFile::exists(QFileInfo(QCoreApplication::applicationFilePath()).absoluteDir().absolutePath().append("/pools.txt"));
 
     std::cout << "Silent = " << silent << " firstRun = " << firstRun << std::endl;
 
