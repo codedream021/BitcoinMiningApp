@@ -1,12 +1,7 @@
-cmake_minimum_required(VERSION 2.6)
+# Set windows env var: set QT5_DIR=C:\Qt\5.15.2\msvc2019_64\
+# Run cmake: cmake.exe --build . -j 4 --config Release
+cmake_minimum_required(VERSION 3.13.0)
 
-set(CMAKE_MODULE_PATH )
-set(CUDA_ENABLE OFF)
-set(OpenCL_ENABLE OFF)
-set(MICROHTTPD_ENABLE OFF)
-set(OpenSSL_ENABLE OFF)
-set(HWLOC_ENABLE OFF)
-set(MHTD "")
 add_subdirectory(xmr-stak)
 if(WIN32)
 add_subdirectory(launcher)
@@ -19,58 +14,25 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON) 
 
-if(WIN32)
-    set(CMAKE_CXX_FLAGS "/O2")
-else()
-    set(CMAKE_CXX_FLAGS "-O3")
-endif()
-
-execute_process(
-	COMMAND git rev-list --count HEAD
-	WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-	OUTPUT_VARIABLE GUI_VERSION
-	OUTPUT_STRIP_TRAILING_WHITESPACE
-)
-
+execute_process(COMMAND git rev-list --count HEAD WORKING_DIRECTORY ${CMAKE_SOURCE_DIR} OUTPUT_VARIABLE GUI_VERSION OUTPUT_STRIP_TRAILING_WHITESPACE)
+message(STATUS "Version = ${GUI_VERSION}")
 add_definitions(-DGUI_VERSION="${GUI_VERSION}")
 #add_definitions(-DXMRSTAK_VERSION="${XMRSTAK_VERSION}")
 if(WIN32)
 add_definitions(-DWIN32=1)
 endif(WIN32)
 
-message(STATUS "Version = ${GUI_VERSION}")
-
-set ( SOURCES
- main.cpp
- MainWindow.cpp
- InfoDialog.cpp
- SettingsDialog.cpp
- FileDownloader.cpp
-)
-
-set ( MOC_HEADERS
- MainWindow.h
- InfoDialog.h
- FileDownloader.h
-)
-
-set ( RESOURCES 
-)
-
-set(Qt5_DIR "C:\\Qt\\5.15.2\\msvc2019_64\\lib\\cmake\\Qt5")
+set(SOURCES main.cpp MainWindow.cpp InfoDialog.cpp SettingsDialog.cpp FileDownloader.cpp)
+set(MOC_HEADERS MainWindow.h InfoDialog.h FileDownloader.h)
+set(RESOURCES)
+ 
 # Next lines needed for building all Qt projects
 find_package( Qt5 COMPONENTS Core Widgets Gui Network REQUIRED )
+
 #find_package( Qt4 REQUIRED )
 #include( ${QT_USE_FILE} )
 add_definitions( ${QT_DEFINITIONS} )
 include_directories( ${CMAKE_BINARY_DIR} )
-include_directories( "C:\\Qt\\5.15.2\\msvc2019_64\\include\\" )
-include_directories( "C:\\Qt\\5.15.2\\msvc2019_64\\include\\QtWidgets\\" )
-include_directories( "C:\\Qt\\5.15.2\\msvc2019_64\\include\\QtCore\\" )
-include_directories( "C:\\Qt\\5.15.2\\msvc2019_64\\include\\QtGui\\" )
-include_directories( "C:\\Qt\\5.15.2\\msvc2019_64\\include\\QtNetwork\\" )
-
-# Next, using precompiler, compiler and linker
 
 # using Qt meta-system (precompiler)
 #QT4_ADD_RESOURCES( RES_SOURCES ${RESOURCES} )
@@ -87,20 +49,15 @@ target_link_libraries(${PROJECT_NAME} Qt5::Gui Qt5::Core Qt5::Widgets Qt5::Netwo
 target_link_libraries( ${PROJECT_NAME} ${QT_LIBRARIES} )
 target_link_libraries( ${PROJECT_NAME} xmr-stak-rx )
 
-
-
 # generate proper GUI program on specified platform
-if(WIN32) # Check if we are on Windows
-	if(MSVC) # Check if we are using the Visual Studio compiler
-		set_target_properties(${PROJECT_NAME} PROPERTIES
-			WIN32_EXECUTABLE YES
-			LINK_FLAGS "/ENTRY:mainCRTStartup"
-		) 
-	endif(MSVC)
+if(XWIN32) # Check if we are on Windows
+    set(CMAKE_CXX_FLAGS "/O2")
+    if(MSVC) # Check if we are using the Visual Studio compiler
+                set_target_properties(${PROJECT_NAME} PROPERTIES WIN32_EXECUTABLE YES LINK_FLAGS "/ENTRY:mainCRTStartup")
+    endif(MSVC)
 elseif(APPLE)
-	set_target_properties(${PROJECT_NAME} PROPERTIES
-			MACOSX_BUNDLE YES
-	)
+  set(CMAKE_CXX_FLAGS "-O3")
+  set_target_properties(${PROJECT_NAME} PROPERTIES MACOSX_BUNDLE YES)
 #elseif(UNIX)
 	# Nothing special required
 #else()
