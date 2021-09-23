@@ -22,12 +22,14 @@ if(WIN32)
 add_definitions(-DWIN32=1)
 endif(WIN32)
 
-set(SOURCES main.cpp MainWindow.cpp InfoDialog.cpp SettingsDialog.cpp FileDownloader.cpp)
-set(MOC_HEADERS MainWindow.h InfoDialog.h FileDownloader.h)
+set(QML_QRC qml.qrc)
+set(APP_ICON_RESOURCE_WINDOWS "${CMAKE_SOURCE_DIR}/appIcon.rc")
+set(SOURCES main.cpp ProjectManager.cpp InfoDialog.cpp SettingsDialog.cpp FileDownloader.cpp)
+set(MOC_HEADERS InfoDialog.h FileDownloader.h)
 set(RESOURCES)
  
 # Next lines needed for building all Qt projects
-find_package( Qt5 COMPONENTS Core Widgets Gui Network REQUIRED )
+find_package( Qt5 COMPONENTS Core Qml Quick QuickControls2 Widgets Gui Network REQUIRED )
 
 #find_package( Qt4 REQUIRED )
 #include( ${QT_USE_FILE} )
@@ -40,13 +42,13 @@ include_directories( ${CMAKE_BINARY_DIR} )
 #QT4_WRAP_CPP( MOC_SRCS ${MOC_HEADERS} )
 
 # compile
-add_executable( ${PROJECT_NAME} ${SOURCES} ${MOC_SRCS} ${RES_SOURCES} ${UI_HEADERS} )
+add_executable( ${PROJECT_NAME} ${QML_QRC} ${APP_ICON_RESOURCE_WINDOWS} ${SOURCES} ${MOC_SRCS} ${RES_SOURCES} ${UI_HEADERS} )
 target_link_libraries(${PROJECT_NAME} Qt5::Gui Qt5::Core Qt5::Widgets Qt5::Network)
 # or use line below instead, if you using Windows ™ Operating System.
 #add_executable( PROJECT_NAME WIN32 ${SOURCES} ${MOC_SRCS} ${RES_SOURCES} ${UI_HEADERS} )
 
 # build it (link libraries)
-target_link_libraries( ${PROJECT_NAME} ${QT_LIBRARIES} )
+target_link_libraries( ${PROJECT_NAME} ${QT_LIBRARIES} Qt${QT_VERSION_MAJOR}::Qml Qt${QT_VERSION_MAJOR}::Quick Qt${QT_VERSION_MAJOR}::QuickControls2)
 target_link_libraries( ${PROJECT_NAME} xmr-stak-rx )
 
 # generate proper GUI program on specified platform

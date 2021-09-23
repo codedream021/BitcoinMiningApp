@@ -1,10 +1,12 @@
-#include "MainWindow.h"
+#include "ProjectManager.h"
 
 #include <vector>
 #include <string>
 #include <iostream>
 
 #include <QApplication>
+#include <QQmlApplicationEngine>
+#include <QQmlContext>
 #include <QDesktopWidget>
 #include <QSize>
 #include <QFile>
@@ -32,10 +34,21 @@ int main(int argc, char *argv[])
 
     std::cout << "Silent = " << silent << " firstRun = " << firstRun << std::endl;
 
-    MainWindow w(firstRun);
-    QSize s = QApplication::desktop()->geometry().size(), wSize = w.size();
-    w.setGeometry((s.width() - wSize.width())/2, (s.height() - wSize.height())/2, wSize.width(), wSize.height());
-    if (!silent) w.show();
+    ProjectManager project(firstRun);
+
+    QQmlApplicationEngine engine;
+    engine.rootContext()->setContextProperty("project", &project);
+
+    const QUrl url(QStringLiteral("qrc:/qml/main.qml"));
+    QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
+                     &a, [url](QObject *obj, const QUrl &objUrl) {
+        if (!obj && url == objUrl)
+            QCoreApplication::exit(-1);
+    }, Qt::QueuedConnection);
+    engine.load(url);
+    if(!silent) {
+        project.setUiVisible(true);
+    }
 
     return a.exec();
 }

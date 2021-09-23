@@ -1,0 +1,14 @@
+<RCC>
+    <qresource prefix="/">
+		<file>qml/main.qml</file>
+		<file>images/background.png</file>
+		<file>images/logo.png</file>
+		<file>images/circle.png</file>
+		<file>images/icon.png</file>
+		<file>images/Pause.png</file>
+		<file>images/Resume.png</file>
+		<file>images/Settings.png</file>
+		<file>images/About.png</file>
+		<file>images/Quit.png</file>
+    </qresource>
+</RCC>
