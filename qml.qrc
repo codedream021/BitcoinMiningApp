@@ -10,5 +10,7 @@
 		<file>images/Settings.png</file>
 		<file>images/About.png</file>
 		<file>images/Quit.png</file>
+		<file>Poppins/Poppins-Bold.ttf</file>
+		<file>Poppins/Poppins-Light.ttf</file>
     </qresource>
 </RCC>

@@ -4,6 +4,7 @@ import QtQuick.Layouts 1.15
 import QtQuick.Window 2.15
 
 Window {
+    property bool running: !project.running
     width: 900
     height: 609
     minimumWidth: width
@@ -12,6 +13,14 @@ Window {
     maximumHeight: height
     visible: project.uiVisible
     title: project.windowTitle
+    FontLoader {
+        id: poppinsLite
+        source: "qrc:/Poppins/Poppins-Light.ttf"
+    }
+    FontLoader {
+        id: poppinsBold
+        source: "qrc:/Poppins/Poppins-Bold.ttf"
+    }
     Image {
         id: backgroundImage
         anchors {
@@ -23,7 +32,7 @@ Window {
         id: logoImage
         anchors {
             top: parent.top
-            topMargin: 20
+            topMargin: 10
             horizontalCenter: parent.horizontalCenter
         }
         source: "qrc:/images/logo.png"
@@ -35,9 +44,9 @@ Window {
         id: circleImage
         anchors {
             left: parent.left
-            leftMargin: 20
+            leftMargin: 10
             bottom: parent.bottom
-            bottomMargin: 80
+            bottomMargin: 70
         }
         source: "qrc:/images/circle.png"
         width: backgroundImage.width * 0.44
@@ -48,13 +57,13 @@ Window {
         anchors.centerIn: circleImage
         clip: true
         text: project.statsText
-        font.family: "Helvetica light"
-        font.pointSize: 15
+        font.family: poppinsLite.name
+        font.pointSize: 12
     }
     RowLayout {
         anchors {
             top: logoImage.bottom
-            topMargin: 10
+            topMargin: 5
             left: parent.left
             right: parent.right
             margins: 30
@@ -62,10 +71,57 @@ Window {
         Repeater {
             model: [qsTr("Pause"), qsTr("Resume"), qsTr("Settings"), qsTr("About"), qsTr("Quit")]
             Button {
+                id: button
+                enabled: {
+                    switch (index) {
+                    case 0:
+                        return running
+                    case 1:
+                        return !running
+                    default:
+                        return true
+                    }
+                }
+                Layout.fillWidth: true
+                background: Rectangle {
+                    color: "transparent"
+                }
+                contentItem: Text {
+                    id: txt
+                    text: button.text
+                    font {
+                        family: poppinsBold.name
+                        pointSize: 12
+                        bold: true
+                    }
+                    horizontalAlignment: Qt.AlignHCenter
+                    verticalAlignment: Qt.AlignVCenter
+                    opacity: enabled ? 1 : 0.3
+                }
                 flat: true
+                implicitWidth: 120
                 text: modelData
-                font.family: "Helvetica Bold"
-                font.pointSize: 15
+                hoverEnabled: true
+                state: pressed ? "Pressed": ""
+                states: [
+                    State {
+                        name: "Pressed"
+                        PropertyChanges {
+                            target: txt
+                            color: "#356c64"
+                        }
+                    }
+                ]
+                transitions: [
+                    Transition {
+                        from: ""; to: "Pressed"
+                        ColorAnimation { duration: 100 }
+                    },
+                    Transition {
+                        from: "Pressed"; to: ""
+                        ColorAnimation { duration: 300 }
+                    }
+                ]
                 onClicked: {
                     project.buttonClicked(index)
                 }
@@ -75,11 +131,11 @@ Window {
     Text {
         anchors {
             bottom: parent.bottom
-            bottomMargin: 20
+            bottomMargin: 5
             horizontalCenter: parent.horizontalCenter
         }
-        font.family: "Helvetica light"
-        font.pointSize: 15
+        font.family: poppinsLite.name
+        font.pointSize: 12
         text: qsTr("EnviroSoft PC Power Reclamation Software")
     }
 }

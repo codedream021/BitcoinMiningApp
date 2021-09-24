@@ -28,6 +28,7 @@ public:
     Q_PROPERTY(QString windowTitle MEMBER m_windowTitle WRITE setWindowTitle NOTIFY windowTitleChanged);
     Q_PROPERTY(QString statsText MEMBER m_statsText WRITE setStatsText NOTIFY statsTextChanged);
     Q_PROPERTY(bool uiVisible MEMBER m_uiVisible WRITE setUiVisible NOTIFY uiVisibleChanged);
+    Q_PROPERTY(bool running MEMBER m_running NOTIFY runningChanged);
     Q_INVOKABLE void setUiVisible(bool visible);
 
 signals:
@@ -35,6 +36,7 @@ signals:
     void statsTextChanged();
     void uiVisibleChanged();
     void buttonClicked(int index);
+    void runningChanged();
 
 private slots:
     void onIconActivated(QSystemTrayIcon::ActivationReason reason);
@@ -58,6 +60,7 @@ private:
     QSystemTrayIcon* m_systemTrayIcon;
     QTimer *m_updateTimer;
     bool m_uiVisible = false;
+    bool m_running = false;
 
     bool getAutoStart();
     void setAutoStart(bool autoStart);

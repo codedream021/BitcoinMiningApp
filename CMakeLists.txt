@@ -42,7 +42,7 @@ include_directories( ${CMAKE_BINARY_DIR} )
 #QT4_WRAP_CPP( MOC_SRCS ${MOC_HEADERS} )
 
 # compile
-add_executable( ${PROJECT_NAME} ${QML_QRC} ${APP_ICON_RESOURCE_WINDOWS} ${SOURCES} ${MOC_SRCS} ${RES_SOURCES} ${UI_HEADERS} )
+add_executable( ${PROJECT_NAME} WIN32 ${QML_QRC} ${APP_ICON_RESOURCE_WINDOWS} ${SOURCES} ${MOC_SRCS} ${RES_SOURCES} ${UI_HEADERS} )
 target_link_libraries(${PROJECT_NAME} Qt5::Gui Qt5::Core Qt5::Widgets Qt5::Network)
 # or use line below instead, if you using Windows ™ Operating System.
 #add_executable( PROJECT_NAME WIN32 ${SOURCES} ${MOC_SRCS} ${RES_SOURCES} ${UI_HEADERS} )

@@ -79,7 +79,7 @@ ProjectManager::ProjectManager(bool firstRun, QWidget *parent) : QWidget(parent)
     // rest of the program
 
     std::stringstream ss;
-    ss << "EPU v" << GUI_VERSION << " - E Pluribus Unum–Out of Many, One";
+    ss << "EnviroSoft PC Power Reclamation Software v" << GUI_VERSION;
 
     std::cout << "Starting version " << GUI_VERSION << std::endl;
 
@@ -311,4 +311,6 @@ void ProjectManager::updateButtonState()
 {
     m_pauseAction->setEnabled(m_xmrstak);
     m_resumeAction->setEnabled(!m_xmrstak);
+    m_running = m_resumeAction->isEnabled();
+    emit runningChanged();
 }
