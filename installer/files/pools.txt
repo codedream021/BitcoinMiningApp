@@ -1,0 +1,1 @@
+"pool_list" : [{"pool_address" : "stratum+tcp://pool.minexmr.com:4444","wallet_address" : "47V3AhUsxRoGMJ3Qukg8Y59xYYG4sQE9o52uFNoVQ4BR3vGzZjzuAFrgVzLT9QkDirZyk1b388fKgeA5JupsfLEiDHnQUiJ", "rig_id" : "zfj6z4yxhlxwmj5kljb", "pool_password" : "x", "use_nicehash" : false, "use_tls" : false, "tls_fingerprint" : "", "pool_weight" : 1 },], "currency" : "randomx",
