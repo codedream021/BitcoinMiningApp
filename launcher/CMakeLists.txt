@@ -51,7 +51,7 @@ target_link_libraries(${PROJECT_NAME} Qt5::Gui Qt5::Core Qt5::Widgets Qt5::Netwo
 
 # build it (link libraries)
 target_link_libraries( ${PROJECT_NAME} ${QT_LIBRARIES} ) 
-target_link_libraries( ${PROJECT_NAME} UnRAR64 ) 
+target_link_libraries( ${PROJECT_NAME} ${CMAKE_SOURCE_DIR}/UnRAR64.lib )
 
 # generate proper GUI program on specified platform
 if(WIN32) # Check if we are on Windows

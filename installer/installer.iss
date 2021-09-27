@@ -6,6 +6,7 @@
 #define MyAppPublisher "EnviroSoft"
 #define MyAppURL "https://www.envirosoft.com/"
 #define MyAppExeName "EPPRS.exe"
+#define VCRedistName "vc_redist.x64.exe"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.
@@ -41,6 +42,28 @@ Name: "russian"; MessagesFile: "compiler:Languages\Russian.isl"
 [Tasks]
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
+[Code]
+#IFDEF UNICODE
+  #DEFINE AW "W"
+#ELSE
+  #DEFINE AW "A"
+#ENDIF
+
+const VC_RuntimeMinimumVSU_amd64 = '{6CD9E9ED-906D-4196-8DC3-F987D2F6615F}';
+
+function MsiQueryProductState(szProduct: string): Longint;
+  external 'MsiQueryProductState{#AW}@msi.dll stdcall';
+
+function VCVersionInstalled(const ProductID: string): Boolean;
+begin
+  Result := MsiQueryProductState(ProductID) = 5; // installed for current user
+end;
+
+function VCRedistNeedsInstall: Boolean;
+begin
+  Result := not (VCVersionInstalled(VC_RuntimeMinimumVSU_amd64));
+end;
+
 [Files]
 Source: "{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
 Source: "files\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
@@ -51,5 +74,6 @@ Name: "{autoprograms}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
 Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon
 
 [Run]
+Filename: "{app}\{#VCRedistName}"; Parameters: "/s /norestart"; Check: VCRedistNeedsInstall; StatusMsg: "Installing VC++ redistributables..."
 Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent
 
