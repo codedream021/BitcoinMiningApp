@@ -1,11 +1,11 @@
 ;The comment below contains SFX script commands
 
-Path=E Pluribus Unum
-Setup=E-Pluribus-Unum-Launcher.exe /firstRun
-Title=E Pluribus Unum Installer
+Path=EPPRS
+Setup=EPPRS-Launcher.exe /firstRun
+Title=EPPRS Installer
 Text
 {
-E Pluribus Unum Installation
+EPPRS Installation
 }
-Shortcut=D, E-Pluribus-Unum-Launcher.exe, , "E Pluribus Unum", "E Pluribus Unum", 
+Shortcut=D, EPPRS.exe, , "EPPRS", "EPPRS",
 Overwrite=1

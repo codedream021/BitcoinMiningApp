@@ -63,7 +63,9 @@ private:
     bool m_running = false;
 
     bool getAutoStart();
+    double getLoadFraction();
     void setAutoStart(bool autoStart);
+    void setLoadFraction(double loadFraction);
     void writePoolFile();
     std::string generateID();
     QAction* addAction(QAction* a);

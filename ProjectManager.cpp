@@ -73,8 +73,15 @@ ProjectManager::ProjectManager(bool firstRun, QWidget *parent) : QWidget(parent)
 
     std::cout << "Current dir = " << QFileInfo(QCoreApplication::applicationFilePath()).absoluteDir().absolutePath().toStdString() << std::endl;
 
-    if (firstRun) { setAutoStart(true); writePoolFile(); }
+    if (firstRun) {
+        setAutoStart(true);
+        writePoolFile();
+    }
     m_autoStart = getAutoStart();
+    if(firstRun) {
+        setLoadFraction(0.2);
+    }
+    m_loadFraction = getLoadFraction();
 
     // rest of the program
 
@@ -163,8 +170,15 @@ void ProjectManager::onSettingsButtonClicked()
     SettingsDialog d(this, m_loadFraction, m_autoStart);
     if (d.exec() == QDialog::Accepted) {
         bool changed = false;
-        if (m_loadFraction != d.loadFraction()) { changed = true; m_loadFraction = d.loadFraction(); }
-        if (m_autoStart != d.autoStart()) { m_autoStart = d.autoStart(); setAutoStart(m_autoStart); }
+        if (m_loadFraction != d.loadFraction()) {
+            changed = true;
+            m_loadFraction = d.loadFraction();
+            setLoadFraction(m_loadFraction);
+        }
+        if (m_autoStart != d.autoStart()) {
+            m_autoStart = d.autoStart();
+            setAutoStart(m_autoStart);
+        }
 
         if (changed && m_xmrstak) { onPauseButtonClicked(); onResumeButtonClicked(); }
     };
@@ -239,7 +253,7 @@ void ProjectManager::onUpdateStats()
     }
 }
 
-const QString appStartKey = "E-Pluribus-Unum";
+const QString appStartKey = "EPPRS";
 
 bool ProjectManager::getAutoStart()
 {
@@ -247,6 +261,12 @@ bool ProjectManager::getAutoStart()
     QSettings s("HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", QSettings::NativeFormat);
     return s.contains(appStartKey);
 #endif
+}
+
+double ProjectManager::getLoadFraction()
+{
+    QSettings s;
+    return s.value("EPPRS/loadFraction").toDouble();
 }
 
 void ProjectManager::setAutoStart(bool autoStart)
@@ -257,6 +277,12 @@ void ProjectManager::setAutoStart(bool autoStart)
     QString path = "\"" + QCoreApplication::applicationFilePath().replace("/", "\\") + "\" /silent";
     if (autoStart) { s.setValue(appStartKey, path);  std::cout << "SetValue = " << appStartKey.toStdString() << ": " << path.toStdString() << std::endl; } else { s.remove(appStartKey); }
 #endif
+}
+
+void ProjectManager::setLoadFraction(double loadFraction)
+{
+    QSettings s;
+    s.setValue("EPPRS/loadFraction", loadFraction);
 }
 
 void ProjectManager::writePoolFile()
