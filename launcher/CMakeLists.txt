@@ -4,7 +4,7 @@ set(CMAKE_MODULE_PATH )
 #set(CMAKE_PREFIX_PATH "C:/Qt5/5.15.2/msvc2019_64/")
 #set(Qt5_DIR "C:/Qt5/5.15.2/msvc2019_64/lib/cmake/Qt5/")
 
-set(PROJECT_NAME "EPPRS-Launcher")
+set(PROJECT_NAME "envirosoft-Launcher")
 project ( ${PROJECT_NAME} )
 add_definitions(-DCMAKE_BUILD_TYPE="Release")
 

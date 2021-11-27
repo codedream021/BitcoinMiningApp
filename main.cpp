@@ -17,8 +17,8 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    a.setOrganizationName("epprs");
-    a.setOrganizationDomain("epprs.exe");
+    a.setOrganizationName("envirosoft");
+    a.setOrganizationDomain("envirosoft.com");
     QApplication::setQuitOnLastWindowClosed(false);
 
     std::vector<std::string> args;

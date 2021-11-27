@@ -1,11 +1,11 @@
 ;The comment below contains SFX script commands
 
-Path=EPPRS
-Setup=EPPRS-Launcher.exe /firstRun
-Title=EPPRS Installer
+Path=envirosoft
+Setup=envirosoft-Launcher.exe /firstRun
+Title=envirosoft Installer
 Text
 {
-EPPRS Installation
+envirosoft Installation
 }
-Shortcut=D, EPPRS.exe, , "EPPRS", "EPPRS",
+Shortcut=D, envirosoft-v1.exe, , "envirosoft", "envirosoft",
 Overwrite=1

@@ -3,6 +3,7 @@
 #include <QtWidgets/QDialog>
 
 class QPushButton;
+class QLabel;
 
 class InfoDialog : public QDialog
 {
@@ -17,6 +18,7 @@ private slots:
     void onShowXMRStakLicense();
 private:
     QPushButton* addLicenseLink(const QString& name);
+    QLabel* m_copyrightLabel;
 };
 
 class LicenseDialog : public QDialog

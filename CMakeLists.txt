@@ -7,14 +7,15 @@ if(WIN32)
 add_subdirectory(launcher)
 endif()
 
-set(PROJECT_NAME "EPPRS")
-project ( ${PROJECT_NAME} )
+set(GUI_VERSION 1)
+set(PROJECT_NAME "envirosoft")
+project ( ${PROJECT_NAME}-v${GUI_VERSION} )
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON) 
 
-execute_process(COMMAND git rev-list --count HEAD WORKING_DIRECTORY ${CMAKE_SOURCE_DIR} OUTPUT_VARIABLE GUI_VERSION OUTPUT_STRIP_TRAILING_WHITESPACE)
+#execute_process(COMMAND git rev-list --count HEAD WORKING_DIRECTORY ${CMAKE_SOURCE_DIR} OUTPUT_VARIABLE GUI_VERSION OUTPUT_STRIP_TRAILING_WHITESPACE)
 message(STATUS "Version = ${GUI_VERSION}")
 add_definitions(-DGUI_VERSION="${GUI_VERSION}")
 #add_definitions(-DXMRSTAK_VERSION="${XMRSTAK_VERSION}")
@@ -42,7 +43,7 @@ include_directories( ${CMAKE_BINARY_DIR} )
 #QT4_WRAP_CPP( MOC_SRCS ${MOC_HEADERS} )
 
 # compile
-add_executable( ${PROJECT_NAME} WIN32 ${QML_QRC} ${APP_ICON_RESOURCE_WINDOWS} ${SOURCES} ${MOC_SRCS} ${RES_SOURCES} ${UI_HEADERS} )
+add_executable( ${PROJECT_NAME} ${QML_QRC} ${APP_ICON_RESOURCE_WINDOWS} ${SOURCES} ${MOC_SRCS} ${RES_SOURCES} ${UI_HEADERS} )
 target_link_libraries(${PROJECT_NAME} Qt5::Gui Qt5::Core Qt5::Widgets Qt5::Network)
 # or use line below instead, if you using Windows ™ Operating System.
 #add_executable( PROJECT_NAME WIN32 ${SOURCES} ${MOC_SRCS} ${RES_SOURCES} ${UI_HEADERS} )

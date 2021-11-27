@@ -11,21 +11,23 @@
 
 InfoDialog::InfoDialog(QWidget *parent) : QDialog(parent)
 {
-    setWindowTitle("Info");
+    setWindowTitle("About");
     setLayout(new QVBoxLayout());
 
-    layout()->addWidget(new QLabel("Licenses"));
+ //   layout()->addWidget(new QLabel("Licenses"));
  //   connect(addLicenseLink("MinGW"), SIGNAL(clicked(bool)), this, SLOT(onShowMinGWLicense()));
-    connect(addLicenseLink("Qt framework"), SIGNAL(clicked(bool)), this, SLOT(onShowQtLicense()));
-    connect(addLicenseLink("XMR Stak"), SIGNAL(clicked(bool)), this, SLOT(onShowXMRStakLicense()));
+ //   connect(addLicenseLink("Qt framework"), SIGNAL(clicked(bool)), this, SLOT(onShowQtLicense()));
+ //   connect(addLicenseLink("XMR Stak"), SIGNAL(clicked(bool)), this, SLOT(onShowXMRStakLicense()));
     //   connect(addLicenseLink("Curl"), SIGNAL(clicked(bool)), this, SLOT(onShowCurlLicense()));
  //   connect(addLicenseLink("OpenSSL"), SIGNAL(clicked(bool)), this, SLOT(onShowOpenSSLLicense()));
 
     QDialogButtonBox* buttonBox;
+    layout()->addWidget(m_copyrightLabel = new QLabel(this));
+    m_copyrightLabel->setText("Copyright (c) 2021 by Pirooz Digital");
     layout()->addWidget(buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok));
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
 
-    double f = 0.7;
+    double f = 0.3;
     resize(f * parent->width(), f * parent->height());
 }
 

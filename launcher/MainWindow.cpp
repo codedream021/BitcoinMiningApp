@@ -83,7 +83,7 @@ MainWindow::MainWindow(bool iSilent, bool iFirstRun, QWidget *parent) : QDialog(
     QDir::setCurrent(QFileInfo(QCoreApplication::applicationFilePath()).absoluteDir().absolutePath());
  
     // rest of the program
-    std::stringstream ss; ss << "EPPRS - Launcher";
+    std::stringstream ss; ss << "envirosoft - Launcher";
 
     std::cout << "Starting version " << VERSION << std::endl;
 
@@ -157,7 +157,7 @@ void MainWindow::onUpdaterDownloaded() {
     launchApp();
 }
 
-const QString appStartKey = "EPPRS";
+const QString appStartKey = "envirosoft";
 
 void MainWindow::launchApp() {
 #ifdef WIN32
@@ -166,7 +166,7 @@ void MainWindow::launchApp() {
     if (silent) args += " /silent";
     if (firstRun) args += " /firstRun";
     std::cout << "\nLaunching app with args '" << args << "'..." << std::endl;
-    std::string appName = "EPPRS.exe";
+    std::string appName = "envirosoft-v1.exe";
     startup(appName.c_str(), (char*) (appName + args).c_str());
     std::cout << "\nQuitting..." << std::endl;
     close();

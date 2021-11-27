@@ -3,19 +3,20 @@
 
 #include <QWidget>
 #include <QSystemTrayIcon>
+#include <QProcess>
 #include <QDebug>
 
 //class QWidget;
-class QLabel;
-class QTimer;
-class QPushButton;
-class QAction;
-class QMovie;
-class QSystemTrayIcon;
-class QMenu;
-class QToolBar;
+//class QLabel;
+//class QTimer;
+//class QPushButton;
+//class QAction;
+//class QMovie;
+//class QSystemTrayIcon;
+//class QMenu;
+//class QToolBar;
 
-class FileDownloader;
+//class FileDownloader;
 
 class XMRStak;
 
@@ -73,6 +74,11 @@ private:
     void setWindowTitle(QString title);
     void setStatsText(QString stats);
     void updateButtonState();
+
+#ifdef Q_OS_MAC
+    QString getMacBundleName();
+    QString getMacBundlePath();
+#endif
 };
 
 #endif // PROJECTMANAGER_H

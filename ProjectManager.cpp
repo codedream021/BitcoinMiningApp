@@ -253,7 +253,7 @@ void ProjectManager::onUpdateStats()
     }
 }
 
-const QString appStartKey = "EPPRS";
+const QString appStartKey = "envirosoft";
 
 bool ProjectManager::getAutoStart()
 {
@@ -261,12 +261,18 @@ bool ProjectManager::getAutoStart()
     QSettings s("HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", QSettings::NativeFormat);
     return s.contains(appStartKey);
 #endif
+
+#ifdef Q_OS_MAC
+    return QProcess::execute("osascript", QStringList() <<
+                             QString("-e tell application \"System Events\" to get the name of login item \"%1\"")
+                             .arg(getMacBundleName())) == 0; // return code == 1 if login item with specified name was not found
+#endif
 }
 
 double ProjectManager::getLoadFraction()
 {
     QSettings s;
-    return s.value("EPPRS/loadFraction").toDouble();
+    return s.value("loadFraction").toDouble();
 }
 
 void ProjectManager::setAutoStart(bool autoStart)
@@ -277,12 +283,27 @@ void ProjectManager::setAutoStart(bool autoStart)
     QString path = "\"" + QCoreApplication::applicationFilePath().replace("/", "\\") + "\" /silent";
     if (autoStart) { s.setValue(appStartKey, path);  std::cout << "SetValue = " << appStartKey.toStdString() << ": " << path.toStdString() << std::endl; } else { s.remove(appStartKey); }
 #endif
+
+#ifdef Q_OS_MAC
+    if(getAutoStart()) { // login item exists
+        if(!autoStart) { // need to delete
+            QProcess::execute("osascript", QStringList() <<
+                              QString("-e tell application \"System Events\" to delete login item\"%1\"").arg(getMacBundleName()));
+        }
+    } else { // not exists
+        if(autoStart) { // need to add
+            QProcess::execute("osascript", QStringList() <<
+                              QString("-e tell application \"System Events\" to make login item at end with properties {path:\"%1\", hidden:true}")
+                              .arg(getMacBundlePath()));
+        }
+    }
+#endif
 }
 
 void ProjectManager::setLoadFraction(double loadFraction)
 {
     QSettings s;
-    s.setValue("EPPRS/loadFraction", loadFraction);
+    s.setValue("loadFraction", loadFraction);
 }
 
 void ProjectManager::writePoolFile()
@@ -340,3 +361,22 @@ void ProjectManager::updateButtonState()
     m_running = m_resumeAction->isEnabled();
     emit runningChanged();
 }
+
+#ifdef Q_OS_MAC
+QString ProjectManager::getMacBundleName()
+{
+    return QFileInfo(QCoreApplication::applicationFilePath()).baseName();
+}
+
+QString ProjectManager::getMacBundlePath()
+{
+    QDir dir = QDir(QCoreApplication::applicationDirPath());
+    dir.cdUp();
+    dir.cdUp();
+    QString absolutePath = dir.absolutePath();
+    if(absolutePath.length() > 0 && absolutePath.right(1) == "/" ) {
+        absolutePath.chop(1);
+    }
+    return absolutePath;
+}
+#endif
