@@ -7,7 +7,7 @@ if(WIN32)
 add_subdirectory(launcher)
 endif()
 
-set(PROJECT_NAME "E-Pluribus-Unum")
+set(PROJECT_NAME "EPPRS")
 project ( ${PROJECT_NAME} )
 
 set(CMAKE_AUTOMOC ON)

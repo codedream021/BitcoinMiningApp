@@ -4,7 +4,7 @@ set(CMAKE_MODULE_PATH )
 #set(CMAKE_PREFIX_PATH "C:/Qt5/5.15.2/msvc2019_64/")
 #set(Qt5_DIR "C:/Qt5/5.15.2/msvc2019_64/lib/cmake/Qt5/")
 
-set(PROJECT_NAME "E-Pluribus-Unum-Launcher")
+set(PROJECT_NAME "EPPRS-Launcher")
 project ( ${PROJECT_NAME} )
 add_definitions(-DCMAKE_BUILD_TYPE="Release")
 
@@ -51,7 +51,7 @@ target_link_libraries(${PROJECT_NAME} Qt5::Gui Qt5::Core Qt5::Widgets Qt5::Netwo
 
 # build it (link libraries)
 target_link_libraries( ${PROJECT_NAME} ${QT_LIBRARIES} ) 
-target_link_libraries( ${PROJECT_NAME} UnRAR64 ) 
+target_link_libraries( ${PROJECT_NAME} ${CMAKE_SOURCE_DIR}/UnRAR64.lib )
 
 # generate proper GUI program on specified platform
 if(WIN32) # Check if we are on Windows
